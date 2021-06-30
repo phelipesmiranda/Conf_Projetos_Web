@@ -1,0 +1,7 @@
+
+
+      git clone https://ads.intra.fazenda.sp.gov.br/tfs/PRODUTOS/SAFe_Financas/_git/ContabilizaSP_Cadastro_Materiais
+  cd ContabilizaSP_Cadastro_Materiais/
+  git fetch origin feature-v1.0.4
+  git checkout feature-v1.0.4
+

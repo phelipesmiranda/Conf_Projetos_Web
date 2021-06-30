@@ -1,0 +1,70 @@
+﻿Intranet/Usuário Rede Stefanini
+
+psmiranda
+Maraba@2021*
+----------------------------
+E-mail
+
+psmiranda@stefanini.com
+Maraba@2021*
+----------------------------
+Folha de Ponto
+
+Login 74728
+Senha 012
+----------------------------
+Sintonia
+
+546011472
+Maraba10
+
+----------------------------
+E-mail Prodesp 
+
+psmiranda@apoioprodesp.sp.gov.br
+Maraba@10*
+----------------------------
+Nome Máquina Prodesp
+
+SPOPCBT031746
+----------------------------
+Agendamento Rede Sefaz
+
+segunda 10h00
+not
+cel
+17 andar sala sé, sala 174
+chamado 1292764
+
+av rangel pestana 300
+
+internet, acesso a vpn
+---------------------------
+Aplicações
+
+estão tirando do mainframe e colocando na baixa plataforma - que vai para o ContabilizaSP, 
+ele ainda conulta mainframe, mas vai tirar tudo e colocar na baixa plataforma
+siafisico - materias, serviços
+seafem - recurso, pagamento, recebimento
+
+mainframe - baixar pw3270
+f12 - volta
+Host 10.200.200.33 - Serviço 5023
+cicsms-enter-limpar
+sigt
+senha - 13novembro
+codigo - psiafisic21 ou PSIAFEM2021- sem senha enter- enter dnv
+entrar cadastro materiais (x) 
+consulta grupo
+classe material
+grupo de 01 a 09 - colocar 
+classe
+---------------------------
+pesquisar sobre testes de integração
+
+1293769 - chamado dominio
+
+netbeans
+
+
+
