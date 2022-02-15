@@ -1,467 +1,632 @@
-﻿package paginas;
+package paginas;
 
-import static org.junit.Assert.assertEquals;
-
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import junit.framework.Assert;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import static org.testng.Assert.assertEquals;
 
 public class Metodos {
 
-	public static WebDriver driver;
+    WebDriver driver;
 
-	/**
-	 * Abrir navegador e site
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param site
-	 * @param navegador
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void abrirNavegador(String site, String navegador, String descricaoPasso) throws IOException {
-		
-		try {
-			if (navegador == "Chrome" || navegador == "Firefox") {
-				if (navegador == "Chrome") {
-					System.setProperty("webdriver.chrome.driver", "./Drivers/chromedriver.exe");
-					driver = new ChromeDriver();
-					driver.get(site);
-					driver.manage().window().maximize();
-				} else if (navegador == "Firefox") {
-					System.setProperty("webdriver.gecko.driver", "./Drivers/geckodriver.exe");
-					driver = new FirefoxDriver();
-					driver.get(site);
-					driver.manage().window().maximize();
-				}
-			} else {
-				System.out.println("Opção inválida escolha Chrome ou Firefox");
-			}
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Abrir navegador e site
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void abrirNavegador(String site, String navegador, String descricaoPasso) throws IOException {
 
-	/**
-	 * Escrever
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param texto
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void escrever(By elemento, String texto, String descricaoPasso) throws IOException {
-		
-		try {
-			driver.findElement(elemento).sendKeys(texto);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
-	
-	/**
-	 * Clicar
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void clicar(By elemento, String descricaoPasso) throws IOException {
-		
-		try {
-			driver.findElement(elemento).click();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
-	
-	/**
-	 * Submit
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void submit(By elemento, String descricaoPasso) throws IOException {
-		
-		try {
-			driver.findElement(elemento).submit();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+        try {
+            if (navegador == "Chrome" || navegador == "Firefox") {
+                if (navegador == "Chrome") {
+                    System.setProperty("webdriver.chrome.driver", "./chrome/windows/chromedriver.exe");
+                    ChromeOptions options = new ChromeOptions();
+                    options.setHeadless(false);
+                    driver = new ChromeDriver(options);
+                    driver.get(site);
+                    driver.manage().window().maximize();
+                } else if (navegador == "Firefox") {
+                    System.setProperty("webdriver.gecko.driver", "./gecko/windows/geckodriver.exe");
+                    File pathBinary = new File("./MozillaFirefox/firefox.exe");
+                    FirefoxProfile profile = new FirefoxProfile();
+                    profile.setPreference("browser.cache.disk.enable", false);
+                    profile.setPreference("browser.cache.memory.enable", false);
+                    profile.setPreference("browser.cache.offline.enable", false);
+                    profile.setPreference("network.http.use-cache", false);
+                    FirefoxBinary firefoxBinary = new FirefoxBinary(pathBinary);
+                    DesiredCapabilities desired = new DesiredCapabilities();
+                    FirefoxOptions options = new FirefoxOptions();
+                    desired.setCapability(FirefoxOptions.FIREFOX_OPTIONS, options.setBinary(firefoxBinary));
+                    options.setHeadless(true);
+                    driver = new FirefoxDriver(options);
+                    driver.get(site);
+                    driver.manage().window().maximize();
+                }
+            } else {
+                System.out.println("Opcao invalida escolha Chrome ou Firefox");
+            }
+        } catch (Exception e) {
+            printScreenErros("Erro ao tentar -- " + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
+        }
+    }
 
-	/**
-	 * Print Screen
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param nomePrint
-	 * @throws IOException
-	 */
-	
-	public void printScreen(String nomePrint) throws IOException {
+    /**
+     * Escrever
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void escrever(By elemento, String texto, String descricaoPasso) throws IOException {
+        try {
+            driver.findElement(elemento).sendKeys(texto);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
 
-		TakesScreenshot print = ((TakesScreenshot) driver);
-		File SrcFile = print.getScreenshotAs(OutputType.FILE);
-		File DestFile = new File("./src/Evidências/" + nomePrint + ".png");
-		FileUtils.copyFile(SrcFile, DestFile);
-	}
-	
-	/**
-	 * Print Screen de Erros
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param nomePrint
-	 * @throws IOException
-	 */
-	
-	public void printScreenErros(String descricaoPasso) throws IOException {
+    /**
+     * Clicar
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void clicar(By elemento, String descricaoPasso) throws IOException {
+        try {
+            driver.findElement(elemento).click();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
 
-		TakesScreenshot print = ((TakesScreenshot) driver);
-		File SrcFile = print.getScreenshotAs(OutputType.FILE);
-		File DestFile = new File("./src/Evidências/Erros/" + descricaoPasso + ".png");
-		FileUtils.copyFile(SrcFile, DestFile);
-	}
+    /**
+     * Submit
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void submit(By elemento, String descricaoPasso) throws IOException {
+        try {
+            driver.findElement(elemento).submit();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
 
-	/**
-	 * Fechar Navegador
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void fecharNavegador(String descricaoPasso) throws IOException {
-		
-		try {
-			driver.quit();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Logins
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenLogins(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./Evidencias/Logins/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Super Click
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoDoPasso
-	 * @throws IOException
-	 */
-	
-	public void superClick(By elemento, String descricaoPasso) throws IOException {
-		
-		try {
-			superClick((By) driver.findElement(elemento), descricaoPasso);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen usuario consumidor
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenConsumidor(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./Evidencias/Consumidor/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Clicar no Texto
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param text
-	 * @param descriPasso
-	 * @throws IOException 
-	 */
+    /**
+     * Print Screen Consultas Grupo e Classe
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenConGrupClass(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Consultas/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	public void clicarText(String text, String descricaoPasso) throws IOException {
-		
-		try {
-		driver.findElement(By.linkText(text)).click();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-}
+    /**
+     * Print Screen Inclusao Grupo e Classe
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenInclusaoGrupClass(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Inclusao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Duplo Click
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoDoPasso
-	 * @throws IOException 
-	 */
+    /**
+     * Print Screen Alteracao Grupo e Classe
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenAlteracaoGrupClass(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Alteracao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	public void duploCliqueNoElemento(By elemento, String descricaoPasso) throws IOException {
-		
-		long TIMEOUT = 40;
-		Actions action = new Actions(driver);
-		try {
-			driver.manage().timeouts().pageLoadTimeout(TIMEOUT, TimeUnit.SECONDS);
-			action.doubleClick(
-					new WebDriverWait(driver, TIMEOUT).until(ExpectedConditions.elementToBeClickable(elemento)));
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Ativacao/Inativacao Grupo e Classe
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenAtvInatvGrupClass(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Selecionar Combo na Posição
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param posicao
-	 * @param descricaoDoPasso
-	 * @throws IOException 
-	 */
-	
-	public void selecionarComboPosicao(By elemento, int posicao, String descricaoPasso) throws IOException {
-		
-		try {
-			WebElement webElement = driver.findElement(elemento);
-			Select combo = new Select(webElement);
-			combo.selectByIndex(posicao);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Ativacao/Inativacao Materiais e Servicos
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenAtvInatvMatServ(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Selecionar Combo no Texto
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param texto
-	 * @param descricaoDoPasso
-	 * @throws IOException 
-	 */
-	
-	public void selecionarComboTexto(By elemento, String texto, String descricaoPasso) throws IOException {
-		
-		try {
-			WebElement webElement = driver.findElement(elemento);
-			Select combo = new Select(webElement);
-			combo.selectByVisibleText(texto);
-			;
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Ativacao/Inativacao Itens
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenAtvInatvItens(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Itens/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Esperar ser clicável
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoPasso
-	 * @throws IOException 
-	 */
-	
-	public void esperarClicavel(By elemento, String descricaoPasso) throws IOException {
-		
-		try {
-			WebDriverWait wait = new WebDriverWait(driver, 10);
-			WebElement el = wait.until(ExpectedConditions.elementToBeClickable(elemento));
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Listagens Materiais e Servicos
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenListMatServ(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Listagens/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Validar Página
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param pagina
-	 * @param descricaoPasso
-	 * @throws IOException 
-	 */
-	
-	public void validarPagina(String pagina, String descricaoPasso) throws IOException {
-		
-		try {
-			String pag = driver.getTitle();
-			assertEquals(pagina, pag);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Consultas Materiais e Servicos
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenConMatServ(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Consultas/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Validar Texto
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param texto
-	 * @param descricaoPasso
-	 * @throws IOException 
-	 */
-	
-	public void validarTexto(By elemento, String texto, String descricaoPasso) throws IOException {
-		
-		try {
-			String msg = driver.findElement(elemento).getText();
-			assertEquals(texto, msg);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Inclusao Materiais e Servicos
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenInclusaoMatServ(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Inclusao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Esperar Escrever Elemento Presente na Tela
-	 * 
-	 * @author Phelipe S Miranda
-	 * 
-	 * @param element
-	 * @param descricaoPasso
-	 * @throws IOException 
-	 */
+    /**
+     * Print Screen Listagens Itens
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenListItens(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Itens/Listagens/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	public void esperarEscrever(By element, String descricaoPasso) throws IOException {
-		
-		try {
-			WebDriverWait wait = new WebDriverWait(driver, 10);
-			boolean elemento = wait.until(ExpectedConditions.elementToBeSelected(element));
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen Consultas Itens
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenConItens(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Itens/Consultas/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Pausa
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param tempo
-	 * @param descricaoPasso
-	 * @throws InterruptedException
-	 * @throws IOException
-	 */
-	
-	public void pausa(int tempo, String descricaoPasso) throws InterruptedException, IOException {
-		
-		try {
-			Thread.sleep(tempo);
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Print Screen de Erros
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenErros(String descricaoPasso) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        if (print == null) {
+            System.out.println("*** no driver!");
+            return;
+        }
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./target/site/Evidencias/Erros/" + descricaoPasso + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
 
-	/**
-	 * Esperar Alert na Tela
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param tempo
-	 * @param descricaoPasso
-	 * @throws IOException 
-	 */
-	
-	public void esperarAlert(int tempo, String descricaoPasso) throws IOException {
-		
-		try {
-			new WebDriverWait(driver, tempo).until(ExpectedConditions.alertIsPresent());
-			driver.switchTo().alert().accept();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
-	public void switcPage() {
-		driver.switchTo().alert().accept();
-	}
-	
-	/**
-	 * Passar o Mouse no Elemento Sem Clicar
-	 *
-	 * @author Phelipe S Miranda
-	 * @param elemento
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
+    /**
+     * Fechar Navegador
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void fecharNavegador(String descricaoPasso) throws IOException {
+        try {
+            driver.quit();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
 
-	public void passarMouse(By elemento, String descricaoPasso) throws IOException {
-		
-		try {
-			Actions action = new Actions(driver);
-			WebElement passarMouse = driver.findElement(elemento);
-			action.moveToElement(passarMouse).perform();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
+    /**
+     * Super Click
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void superClick(By elemento, String descricaoPasso) throws IOException {
+        try {
+            superClick((By) driver.findElement(elemento), descricaoPasso);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
 
-	/**
-	 * Pressionar tecla Enter
-	 * 
-	 * @author Phelipe S Miranda
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void teclaEnter(String descricaoPasso) throws IOException {
-		
-		try {
-			Actions action = new Actions(driver);
-			action.sendKeys(Keys.ENTER).perform();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
-	
-	/**
-	 * Clicar e segurar, mover e soltar com mouse
-	 *
-	 * @author Phelipe S Miranda
-	 * @param elementoOrigem
-	 * @param elementoDestino
-	 * @param descricaoPasso
-	 * @throws IOException
-	 */
-	
-	public void moverElemento(By elementoOrigem, By elementoDestino, String descricaoPasso) throws IOException {
-		
-		try {
-			Actions action = new Actions(driver);
-			WebElement origem = driver.findElement(elementoOrigem);
-			WebElement destino = driver.findElement(elementoDestino);
-			action.dragAndDrop(origem, destino).build().perform();
-		} catch (Exception e) {
-			printScreenErros("Erro ao tentar -- " + descricaoPasso);
-			Assert.fail(LocalDateTime.now() + "  --  Erro ao tentar " + descricaoPasso);
-		}
-	}
-	
+    /**
+     * Duplo Click
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void duploCliqueNoElemento(By elemento, String descricaoPasso) throws IOException {
+        long TIMEOUT = 60;
+        Actions action = new Actions(driver);
+        try {
+            driver.manage().timeouts().pageLoadTimeout(TIMEOUT, TimeUnit.SECONDS);
+            action.doubleClick(
+                    new WebDriverWait(driver, TIMEOUT).until(ExpectedConditions.elementToBeClickable(elemento)));
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Selecionar Combo na Posicao
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void selecionarComboPosicao(By elemento, int posicao, String descricaoPasso) throws IOException {
+        try {
+            WebElement webElement = driver.findElement(elemento);
+            Select combo = new Select(webElement);
+            combo.selectByIndex(posicao);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Selecionar Combo no Texto
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void selecionarComboTexto(By elemento, String texto, String descricaoPasso) throws IOException {
+        try {
+            WebElement webElement = driver.findElement(elemento);
+            Select combo = new Select(webElement);
+            combo.selectByVisibleText(texto);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Esperar ser clicavel
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    /**
+     * Esperar ser clicavel
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void esperarClicavel(By elemento, String descricaoPasso) throws IOException {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, 25);
+            wait.until(ExpectedConditions.presenceOfElementLocated(elemento));
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Validar Pagina
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void validarPagina(String pagina, String descricaoPasso) throws IOException {
+        try {
+            String pag = driver.getTitle();
+            assertEquals(pagina, pag);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Validar Texto
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void validarTexto(By elemento, String texto, String descricaoPasso) throws IOException {
+        try {
+            String msg = driver.findElement(elemento).getText();
+            assertEquals(texto, msg);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Pausa
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void pausa(int tempo, String descricaoPasso) throws InterruptedException, IOException {
+        try {
+            Thread.sleep(tempo);
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Esperar Alert na Tela
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void esperarAlert(int tempo, String descricaoPasso) throws IOException {
+        try {
+            new WebDriverWait(driver, tempo).until(ExpectedConditions.alertIsPresent());
+            driver.switchTo().alert().accept();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    public void switcPage() {
+        driver.switchTo().alert().accept();
+    }
+
+    /**
+     * Passar o Mouse no Elemento Sem Clicar
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void passarMouse(By elemento, String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            WebElement passarMouse = driver.findElement(elemento);
+            action.moveToElement(passarMouse).perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Pressionar tecla Enter
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void teclaEnter(String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            action.sendKeys(Keys.ENTER).perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * Clicar e segurar, mover e soltar com mouse
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void moverElemento(By elementoOrigem, By elementoDestino, String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            WebElement origem = driver.findElement(elementoOrigem);
+            WebElement destino = driver.findElement(elementoDestino);
+            action.dragAndDrop(origem, destino).build().perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * teclaPageUp
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void teclaPageUp(String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            action.sendKeys(Keys.PAGE_UP).perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * teclaPageDw
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void teclaPageDw(String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            action.sendKeys(Keys.PAGE_DOWN).perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * botaoVoltar
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void botaoVoltar(String descricaoPasso) throws IOException {
+        try {
+            driver.navigate().back();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * botaoAtualizar
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void botaoAtualizar(String descricaoPasso) throws IOException {
+        try {
+            driver.navigate().refresh();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * teclaBackSpace
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void teclaBackSpace(String descricaoPasso) throws IOException {
+        try {
+            Actions action = new Actions(driver);
+            action.sendKeys(Keys.BACK_SPACE).perform();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * limparTexto
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void limparTexto(By elemento, String descricaoPasso) throws IOException {
+        try {
+            driver.findElement(elemento).clear();
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
+    /**
+     * limparTextoAlternativo
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void limparTextoAlternativo(By elemento, String descricaoPasso) throws IOException {
+        try {
+            driver.findElement(elemento).sendKeys(Keys.chord(Keys.CONTROL, "a", Keys.DELETE));
+        } catch (Exception e) {
+            printScreenErros("Erro_ao_tentar-" + descricaoPasso);
+            Assert.fail(LocalDateTime.now() + "Erro_ao_tentar-" + descricaoPasso);
+        }
+    }
+
 }
