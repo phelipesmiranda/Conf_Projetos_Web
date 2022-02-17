@@ -1,23 +1,26 @@
 package paginas;
 
+
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
+
 import static org.testng.Assert.assertEquals;
 
 public class Metodos {
@@ -43,7 +46,7 @@ public class Metodos {
                     driver.manage().window().maximize();
                 } else if (navegador == "Firefox") {
                     System.setProperty("webdriver.gecko.driver", "./gecko/windows/geckodriver.exe");
-                    File pathBinary = new File("./MozillaFirefox/firefox.exe");
+                    File pathBinary = new File("./mozilla/firefox.exe");
                     FirefoxProfile profile = new FirefoxProfile();
                     profile.setPreference("browser.cache.disk.enable", false);
                     profile.setPreference("browser.cache.memory.enable", false);
@@ -121,20 +124,33 @@ public class Metodos {
     public void printScreenLogins(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./Evidencias/Logins/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Logins/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
     /**
-     * Print Screen usuario consumidor
+     * Print Screen Autorizacao Grupo e Classe
      *
      * @author Phelipe S Miranda
      *
      */
-    public void printScreenConsumidor(String nomePrint) throws IOException {
+    public void printScreenAutGrupClass(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./Evidencias/Consumidor/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Autorizacao/" + nomePrint + ".png");
+        FileUtils.copyFile(SrcFile, DestFile);
+    }
+
+    /**
+     * Print Screen Listagens Grupo e Classe
+     *
+     * @author Phelipe S Miranda
+     *
+     */
+    public void printScreenLisGrupClass(String nomePrint) throws IOException {
+        TakesScreenshot print = ((TakesScreenshot) driver);
+        File SrcFile = print.getScreenshotAs(OutputType.FILE);
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Listagens/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -147,7 +163,7 @@ public class Metodos {
     public void printScreenConGrupClass(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Consultas/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Consultas/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -160,7 +176,7 @@ public class Metodos {
     public void printScreenInclusaoGrupClass(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Inclusao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Inclusao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -173,7 +189,7 @@ public class Metodos {
     public void printScreenAlteracaoGrupClass(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Alteracao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Alteracao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -186,7 +202,7 @@ public class Metodos {
     public void printScreenAtvInatvGrupClass(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Grupo_e_Classe/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Grupo_e_Classe/Ativacao_e_Inativacao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -199,7 +215,7 @@ public class Metodos {
     public void printScreenAtvInatvMatServ(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Materiais_e_Servicos/Ativacao_e_Inativacao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -212,7 +228,7 @@ public class Metodos {
     public void printScreenAtvInatvItens(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Itens/Ativacao_e_Inativacao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Itens/Ativacao_e_Inativacao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -225,7 +241,7 @@ public class Metodos {
     public void printScreenListMatServ(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Listagens/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Materiais_e_Servicos/Listagens/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -238,7 +254,7 @@ public class Metodos {
     public void printScreenConMatServ(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Consultas/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Materiais_e_Servicos/Consultas/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -251,7 +267,7 @@ public class Metodos {
     public void printScreenInclusaoMatServ(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Materiais_e_Servicos/Inclusao/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Materiais_e_Servicos/Inclusao/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -264,7 +280,7 @@ public class Metodos {
     public void printScreenListItens(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Itens/Listagens/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Itens/Listagens/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -277,7 +293,7 @@ public class Metodos {
     public void printScreenConItens(String nomePrint) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Itens/Consultas/" + nomePrint + ".png");
+        File DestFile = new File("./evidencias/Itens/Consultas/" + nomePrint + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -290,11 +306,11 @@ public class Metodos {
     public void printScreenErros(String descricaoPasso) throws IOException {
         TakesScreenshot print = ((TakesScreenshot) driver);
         if (print == null) {
-            System.out.println("*** no driver!");
+            System.out.println("**** No driver ****");
             return;
         }
         File SrcFile = print.getScreenshotAs(OutputType.FILE);
-        File DestFile = new File("./target/site/Evidencias/Erros/" + descricaoPasso + ".png");
+        File DestFile = new File("./evidencias/Erros/" + descricaoPasso + ".png");
         FileUtils.copyFile(SrcFile, DestFile);
     }
 
@@ -387,15 +403,9 @@ public class Metodos {
      * @author Phelipe S Miranda
      *
      */
-    /**
-     * Esperar ser clicavel
-     *
-     * @author Phelipe S Miranda
-     *
-     */
     public void esperarClicavel(By elemento, String descricaoPasso) throws IOException {
         try {
-            WebDriverWait wait = new WebDriverWait(driver, 25);
+            WebDriverWait wait = new WebDriverWait(driver, 60);
             wait.until(ExpectedConditions.presenceOfElementLocated(elemento));
         } catch (Exception e) {
             printScreenErros("Erro_ao_tentar-" + descricaoPasso);
@@ -630,3 +640,4 @@ public class Metodos {
     }
 
 }
+
