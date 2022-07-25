@@ -1,0 +1,106 @@
+Tutorial de Instalação (WEB)
+
+1-Criar uma pasta via linha de comando "mkdir <nome da pasta>;
+
+Obs.: Para ir até uma pasta usar comando "cd <nome da pasta>, para voltar uma pasta "cd .", duas "cd ..", etc.
+
+2-Iniciar o comando "npm init -y" para dar inicio ao projeto;
+
+3-Instalar cypress pelo comando "npm install cypress@8.5.0";
+
+4-Instalar cucumber pelo comando "npm install cypress-cucumber-preprocessor";
+
+5-Instalar modulo de report do cucumber "npm install cucumber-html-reporter";
+
+6-Dentro de package-lock.json, retirar "^", das packages e retirar "^" também da package.json;
+
+7-Abrir cypress pelo comando "npx cypress open" para terminar de instalar as configurações e abrir o cypress;
+
+8-Apagar a pasta "examples" dentro do caminho "cypress/integration/examples";
+
+9-Copiar o script abaixo dentro de "cypress.json":
+
+{
+    "testFiles": "**/*.feature",
+    "video": true,
+    "viewportWidth": 1024,
+    "viewportHeight": 768,
+    "defaultCommandTimeout": 10000,
+    "baseUrl": "https://caixatem.homolog.buspay.com.br/login"
+}
+
+10-Copiar o script abaixo dentro de "package.json", alterar apenas o author, e o nome do projeto:
+
+{
+  "name": "caixatem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+   "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:run": "cypress run ",
+    "postcypress:run": "node ./cypress/support/cucumber-html-reporter.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cucumber-html-reporter": "5.2.0",
+    "cypress": "7.0.1",
+    "cypress-cucumber-preprocessor": "4.0.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true,
+    "stepDefinitions": "cypress/support/testes",
+    "cucumberJson": {
+      "generate": true,
+      "outputFolder": "cypress/cucumber-json",
+      "filePrefix": "",
+      "fileSuffix": ".json"
+    }
+  }
+}
+
+9-Colar script abaixo no arquivo "index.js" dentro de "cypress/plugins/":
+
+const cucumber = require('cypress-cucumber-preprocessor').default
+
+module.exports = (on, config) => {
+  on('file:preprocessor', cucumber())
+}
+
+10-criar arquivo "cucumber-html-reporter.js", dentro da pasta "cypress/support" e colar o script abaixo:
+
+var reporter = require('cucumber-html-reporter');
+
+var today = new Date();
+var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+var dateTime = date+'_'+time;
+
+var options = {
+  theme: 'bootstrap',
+    jsonFile: 'cypress/cucumber-json/',
+    output: "cypress/reports/report_"+dateTime+".html",
+    reportSuiteAsScenarios: true,
+    scenarioTimestamp: true,
+    launchReport: false,
+    metadata: {
+      "Tipo de Teste": "End to End",
+      "Navegador": "Chrome",
+      "Sistema Operacional": "Windows 10",
+      "Executado": "Ambiente Local"
+    }
+  };
+
+reporter.generate(options);
+
+11-Fechar o cypress;
+
+12-Executar comando "npm run cypress:run -- --browser chrome", para apenas executar e fechar o cypress, e gerar report e vídeo;
+
+13-Executar comando "npx cypress open", para apenas abrir o cypress e ir inspecionando o site;
+
+14-Executar comando <npm run cypress:run -- --browser chrome --env TAGS="@RecargaWeb">, para executar o cenário apenas com a tag desejada.
+
+15-
